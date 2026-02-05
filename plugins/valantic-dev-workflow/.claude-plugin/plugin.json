@@ -1,0 +1,8 @@
+{
+  "name": "valantic-dev-workflow",
+  "description": "Deployment, code review, and onboarding commands with permission hooks for safe tool usage",
+  "author": {
+    "name": "Valantic",
+    "email": "claude-marketplace@valantic.com"
+  }
+}

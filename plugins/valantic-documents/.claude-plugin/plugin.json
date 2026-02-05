@@ -1,0 +1,8 @@
+{
+  "name": "valantic-documents",
+  "description": "Branded PPTX/PDF/DOCX generation with Valantic templates and styling",
+  "author": {
+    "name": "Valantic",
+    "email": "claude-marketplace@valantic.com"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "valantic-claude-code-marketplace",
+  "description": "Valantic company marketplace: branded documents, dev workflows, coding standards, project templates",
+  "owner": {
+    "name": "Valantic",
+    "email": "claude-marketplace@valantic.com"
+  },
+  "plugins": [
+    {
+      "name": "valantic-brand-guidelines",
+      "description": "Valantic Liquid Brand Design system with Routes A/B/C, colors, typography",
+      "version": "1.0.0",
+      "source": "./plugins/valantic-brand-guidelines",
+      "category": "design"
+    },
+    {
+      "name": "valantic-documents",
+      "description": "Branded PPTX/PDF/DOCX generation with Valantic templates and styling",
+      "version": "1.0.0",
+      "source": "./plugins/valantic-documents",
+      "category": "productivity"
+    },
+    {
+      "name": "valantic-dev-workflow",
+      "description": "Deployment, code review, and onboarding commands with permission hooks",
+      "version": "1.0.0",
+      "source": "./plugins/valantic-dev-workflow",
+      "category": "development"
+    },
+    {
+      "name": "valantic-coding-standards",
+      "description": "Enforce Valantic coding conventions automatically via skills and hooks",
+      "version": "1.0.0",
+      "source": "./plugins/valantic-coding-standards",
+      "category": "development"
+    },
+    {
+      "name": "valantic-project-setup",
+      "description": "Bootstrap new projects with Valantic templates for PHP, React, and Spring",
+      "version": "1.0.0",
+      "source": "./plugins/valantic-project-setup",
+      "category": "development"
+    }
+  ]
+}

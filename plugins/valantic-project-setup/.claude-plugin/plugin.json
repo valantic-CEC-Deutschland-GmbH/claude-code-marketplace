@@ -1,0 +1,8 @@
+{
+  "name": "valantic-project-setup",
+  "description": "Bootstrap new projects with Valantic templates for PHP, React, and Spring Boot",
+  "author": {
+    "name": "Valantic",
+    "email": "claude-marketplace@valantic.com"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "valantic-coding-standards",
+  "description": "Enforce Valantic coding conventions automatically via skills and pre-tool-use hooks",
+  "author": {
+    "name": "Valantic",
+    "email": "claude-marketplace@valantic.com"
+  }
+}

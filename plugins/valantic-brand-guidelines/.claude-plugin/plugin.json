@@ -1,0 +1,8 @@
+{
+  "name": "valantic-brand-guidelines",
+  "description": "Applies Valantic's official Liquid Brand Design identity including Routes A/B/C, colors, typography, and design tokens",
+  "author": {
+    "name": "Valantic",
+    "email": "claude-marketplace@valantic.com"
+  }
+}

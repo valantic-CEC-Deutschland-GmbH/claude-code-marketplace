@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/standards_check.py",
+            "timeout": 10
+          }
+        ],
+        "matcher": "Edit|Write"
+      }
+    ]
+  }
+}

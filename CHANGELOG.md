@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 — 2026-02-18
+
+### Added
+- TweakCC configuration with custom themes, thinking verbs, and UI display settings
+
 ## 1.0.0 — 2026-02-05
 
 ### Added

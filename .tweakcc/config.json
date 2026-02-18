@@ -1,7 +1,7 @@
 {
   "ccVersion": "2.1.45",
   "ccInstallationPath": null,
-  "lastModified": "2026-02-18T21:41:15.431Z",
+  "lastModified": "2026-02-18T22:14:52.133Z",
   "changesApplied": true,
   "settings": {
     "themes": [
@@ -707,10 +707,10 @@
     "userMessageDisplay": {
       "format": " > {} ",
       "styling": [],
-      "foregroundColor": "default",
-      "backgroundColor": null,
-      "borderStyle": "none",
-      "borderColor": "rgb(255,255,255)",
+      "foregroundColor": "rgb(255,220,248)",
+      "backgroundColor": "rgb(55,20,60)",
+      "borderStyle": "topBottomDouble",
+      "borderColor": "rgb(200,100,190)",
       "paddingX": 0,
       "paddingY": 0,
       "fitBoxToContent": false

@@ -6,7 +6,7 @@ Company-internal Claude Code marketplace providing branded tools, workflows, and
 
 ```bash
 # Add the Valantic marketplace
-/plugin marketplace add valantic/claude-code-marketplace
+/plugin marketplace add valantic-CEC-Deutschland-GmbH/claude-code-marketplace
 
 # Browse available plugins
 /plugins

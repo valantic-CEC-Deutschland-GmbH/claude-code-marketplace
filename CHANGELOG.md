@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 — 2026-02-23
+
+### Fixed
+- Corrected marketplace add command in README to use `valantic-CEC-Deutschland-GmbH/claude-code-marketplace`
+
 ## 1.1.0 — 2026-02-23
 
 ### Added

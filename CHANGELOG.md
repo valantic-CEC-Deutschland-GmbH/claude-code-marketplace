@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 — 2026-02-23
+
+### Added
+- **valantic-ai-permission-evaluator** plugin: LLM-powered pre-tool-use hook using GPT-4.1-nano for contextual safety evaluation of all Claude Code tool calls. Requires `OPENAI_API_KEY` environment variable and `npm install` after plugin installation.
+
 ## 1.0.1 — 2026-02-18
 
 ### Added

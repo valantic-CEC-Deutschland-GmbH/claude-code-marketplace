@@ -1,0 +1,8 @@
+{
+  "name": "valantic-ai-permission-evaluator",
+  "description": "LLM-powered permission evaluator hook that uses GPT-4.1-nano to assess tool usage safety in real-time",
+  "author": {
+    "name": "Valantic",
+    "email": "claude-marketplace@valantic.com"
+  }
+}

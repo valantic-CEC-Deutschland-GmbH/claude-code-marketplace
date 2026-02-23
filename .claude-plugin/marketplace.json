@@ -41,6 +41,13 @@
       "version": "1.0.0",
       "source": "./plugins/valantic-project-setup",
       "category": "development"
+    },
+    {
+      "name": "valantic-ai-permission-evaluator",
+      "description": "LLM-powered tool safety evaluation using GPT-4.1-nano — requires OPENAI_API_KEY",
+      "version": "1.0.0",
+      "source": "./plugins/valantic-ai-permission-evaluator",
+      "category": "security"
     }
   ]
 }

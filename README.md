@@ -83,12 +83,7 @@ LLM-powered pre-tool-use hook that evaluates **every** Claude Code tool call for
 - Node.js and npm installed
 - An OpenAI API key set as `OPENAI_API_KEY` environment variable
 
-**Setup after installation:**
-```bash
-# Navigate to the plugin directory and install dependencies
-cd ~/.claude/plugins/valantic-ai-permission-evaluator
-npm install
-```
+**Setup:** Dependencies are installed automatically on first session start via a `SessionStart` hook. No manual `npm install` required.
 
 **How it works:**
 - Internal tools (TaskUpdate, TaskCreate, etc.) are auto-approved as always safe
@@ -105,6 +100,25 @@ npm install
 | Dependencies | Python stdlib only | Node.js + `openai` npm package |
 | External API | None | OpenAI API (`OPENAI_API_KEY` required) |
 | Latency | ~instant | ~200-500ms per evaluation |
+
+## TweakCC UI Configuration
+
+This repository includes a [`.tweakcc/config.json`](.tweakcc/config.json) that customizes the Claude Code terminal UI. It is managed by [TweakCC](https://github.com/Piebald-AI/tweakcc), a tool for theming and personalizing the Claude Code CLI experience.
+
+**What's configured:**
+- **8 color themes** — Dark, Light, ANSI-only, Colorblind-friendly, Monochrome, and Sweet
+- **Custom thinking verbs** — Replaces the default spinner text with personality (hmm, oof, yeet, segfault, ...)
+- **Braille spinner animation** — Progressive dot-fill pattern with reverse mirror
+- **Styled user messages** — Custom borders, colors, and formatting
+- **Misc tweaks** — Expanded thinking blocks, conversation titles, swarm mode, session memory, and more
+
+**Install TweakCC:**
+
+```bash
+npm install -g tweakcc
+```
+
+After installation, TweakCC picks up the `.tweakcc/config.json` from the repo root and applies the configured themes and settings to your Claude Code session. See the [TweakCC documentation](https://github.com/Piebald-AI/tweakcc) for all available configuration options.
 
 ## Security
 

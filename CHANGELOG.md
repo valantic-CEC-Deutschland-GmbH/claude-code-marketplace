@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2 — 2026-02-23
+
+### Added
+- TweakCC install instructions and documentation section in README
+- SessionStart hook for automatic dependency installation in ai-permission-evaluator plugin
+
 ## 1.1.1 — 2026-02-23
 
 ### Fixed

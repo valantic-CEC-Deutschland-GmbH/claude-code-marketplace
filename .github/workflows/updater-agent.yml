@@ -1,0 +1,210 @@
+name: Updater Agent
+
+on:
+  workflow_call:
+    inputs:
+      major:
+        description: 'Include major version updates'
+        type: boolean
+        default: false
+      branch_name:
+        description: 'Branch name for the update PR'
+        type: string
+        default: 'ai/dependency-updates'
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependency-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Write MCP config
+        run: |
+          cat > /tmp/mcp-config.json << 'EOF'
+          {
+            "mcpServers": {
+              "context7": {
+                "command": "npx",
+                "args": ["-y", "@upstash/context7-mcp"]
+              }
+            }
+          }
+          EOF
+
+      - name: Run dependency update agent
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          MAJOR_FLAG="${{ inputs.major }}"
+          BRANCH_NAME="${{ inputs.branch_name }}"
+          claude -p "CONFIGURATION:
+          - Include major version updates: ${MAJOR_FLAG}
+          - Update branch name: ${BRANCH_NAME}
+          $(cat <<'PROMPT'
+
+          You are a dependency update agent. Your job is to update ALL project dependencies — package managers, Docker images, and GitHub Actions — to their latest versions, adapt source code for breaking changes, and create or update a PR with the results.
+
+          Read CLAUDE.md first to understand the project and check for any "Known Dependency Technical Debt" section — skip dependencies listed there.
+
+          ## Step 1: Branch setup
+          Check if an open PR exists on the configured update branch:
+            gh pr list --head <branch_name> --state open --json number,title
+          - If a PR exists: check out that branch (git checkout <branch_name> && git pull origin <branch_name>) and continue — there may be new updates to pick up.
+          - If no PR exists: create a fresh branch (git checkout -B <branch_name> origin/main).
+
+          ## Step 2: Discover stack
+          Analyze the repository to understand what needs updating:
+          - **Package managers**: Check for composer.json, package.json, yarn.lock, pnpm-lock.yaml, requirements.txt/Pipfile/pyproject.toml, go.mod, Cargo.toml, build.gradle/pom.xml, Gemfile
+          - **Docker**: Check for Dockerfile*, docker-compose*.yml, docker-compose*.yaml
+          - **GitHub Actions**: Check .github/workflows/*.yml for `uses:` directives
+          List what you found before proceeding.
+
+          ## Step 3: Discover outdated dependencies
+
+          ### 3a: Package managers
+          Run the appropriate outdated commands for each detected package manager:
+          - composer outdated --direct --format=json
+          - npm outdated --json
+          - yarn outdated (if yarn.lock exists)
+          - pip list --outdated (if requirements.txt/Pipfile exists)
+          - go list -m -u all (if go.mod exists)
+          - cargo outdated (if Cargo.toml exists)
+          - And so on for other detected package managers.
+
+          ### 3b: Docker images
+          For each Dockerfile and docker-compose file:
+          - Extract all FROM image:tag lines (including multi-stage builds and COPY --from= references)
+          - Extract all image: directives from compose files
+          - For each image:tag, look up the latest available tag on Docker Hub (use curl against https://registry.hub.docker.com/v2/repositories/library/<image>/tags?page_size=100&ordering=last_updated for official images, or https://registry.hub.docker.com/v2/repositories/<namespace>/<image>/tags for others). You can also use web search if the API is difficult.
+          - Compare current tag to latest available. Note: some tags use semver (node:20.11.0), some use major only (node:20), some use named versions (php:8.4-fpm). Compare at the same granularity as the current tag.
+          - Flag images using :latest tag with a recommendation to pin, but do not change them.
+
+          ### 3c: GitHub Actions
+          For each .github/workflows/*.yml:
+          - Extract all `uses:` references (e.g., actions/checkout@v4, docker/build-push-action@v5)
+          - Check the latest release/tag for each action (use: gh api repos/<owner>/<repo>/releases/latest --jq '.tag_name' or web search)
+          - Compare current pin to latest.
+
+          ### Major version filtering
+          If "Include major version updates" is false:
+          - **Package managers**: Skip updates where the MAJOR version changes (e.g., 3.x → 4.x)
+          - **Docker images**: Use judgment — php:8.4→8.5 is minor, php:8→9 is major, node:20→22 is major. Skip major bumps.
+          - **GitHub Actions**: Skip major version bumps (e.g., actions/checkout@v4 → @v5)
+
+          If nothing is outdated across all categories, print "All dependencies are up to date." and stop.
+
+          ## Step 4: Update dependencies
+
+          ### 4a: Package manager updates
+          For each outdated package manager dependency:
+          1. Update it (composer require vendor/package:^newversion, npm install package@latest, etc.)
+          2. For major version bumps, use Context7 MCP tools (resolve-library-id then query-docs) to look up migration guides and breaking changes.
+          3. Apply any necessary code changes — update imports, fix deprecated API calls, adjust config files. You have full permission to edit source code.
+          4. Run the package manager's install/update to ensure everything resolves.
+          5. If an update is too complex, skip it and note it for the technical debt section.
+
+          ### 4b: Docker image updates
+          For each outdated Docker image:
+          1. Update the tag in the Dockerfile or compose file.
+          2. If the same image appears in multiple files (e.g., docker-compose.yml AND docker-compose-prod.yml AND CI workflows), update ALL of them to stay consistent.
+          3. Check downstream effects: if you update a PHP base image (e.g., php:8.4→8.5), check if composer.json has a php constraint that needs updating. Same for node versions and engines field in package.json.
+          4. For multi-stage Dockerfiles, also check COPY --from= references for versioned builder images.
+          5. If the update would be too disruptive, skip it and note it.
+
+          ### 4c: GitHub Actions updates
+          For each outdated action:
+          1. Update the version pin in the workflow file(s).
+          2. Check if the new version has breaking changes (changed inputs, removed features). Review the action's releases/changelog if needed.
+          3. If breaking changes exist, adapt the workflow configuration.
+
+          ## Step 5: Verify
+          Autonomously discover and run the project's verification checks:
+          1. Check CLAUDE.md for documented quality commands
+          2. Check composer.json scripts (e.g., code-check, phpstan, phpcs, test)
+          3. Check package.json scripts (e.g., build, lint, test, typecheck)
+          4. Check for Makefile targets
+          5. Check CI workflow files for the commands they run
+          Run all discovered checks. If any check fails due to your changes, attempt to fix the issue. If you cannot fix it, revert that specific update and note it as skipped.
+
+          ## Step 6: Record skipped dependencies
+          If any dependencies were skipped due to complexity:
+          - If CLAUDE.md exists: add or update a "Known Dependency Technical Debt" section at the bottom listing each skipped package, its current version, the target version, and a brief reason.
+          - If CLAUDE.md does not exist: create DEPENDENCY_DEBT.md with the same information.
+          This ensures future runs know to skip them automatically.
+
+          ## Step 7: Commit and push
+          - Stage all changed files
+          - Create a commit: "chore: update dependencies (YYYY-MM-DD)" with today's date
+          - Push: git push --force-with-lease origin <branch_name>
+
+          ## Step 8: Create or update PR
+          Check if a PR already exists:
+            gh pr list --head <branch_name> --state open --json number
+
+          Create or update the PR with a structured body using this format:
+
+          Title: "chore: dependency updates (YYYY-MM-DD)"
+
+          Body:
+          ## Summary
+          Automated dependency update run.
+
+          ## Package Manager Updates
+          | Package | Manager | Old | New | Type |
+          |---------|---------|-----|-----|------|
+          (list each updated package)
+
+          ## Docker Image Updates
+          | Image | File | Old Tag | New Tag | Type |
+          |-------|------|---------|---------|------|
+          (list each updated image, including which file it was in)
+
+          ## GitHub Actions Updates
+          | Action | File | Old | New | Type |
+          |--------|------|-----|-----|------|
+          (list each updated action)
+
+          ## Skipped Dependencies
+          | Dependency | Current | Target | Reason |
+          |------------|---------|--------|--------|
+          (list any skipped items, or "None")
+
+          ## Verification Results
+          - List each check that was run and its result (pass/fail/fixed)
+
+          ## Code Changes
+          - List any source code modifications made for breaking changes
+
+          Use `gh pr create` or `gh pr edit` as appropriate.
+          PROMPT
+          )" \
+            --dangerously-skip-permissions \
+            --output-format text \
+            --verbose \
+            --model claude-sonnet-4-6 \
+            --mcp-config /tmp/mcp-config.json

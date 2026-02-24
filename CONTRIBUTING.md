@@ -42,6 +42,33 @@ Before submitting:
 3. Run hook scripts manually to check for errors
 4. Ensure no secrets or credentials are included
 
+## Adding a New Agent
+
+Agents are reusable GitHub Actions workflows in the `agents/` directory.
+
+1. Create a directory under `agents/` with your agent name
+2. Add a `README.md` with inputs, secrets, permissions, quick-start YAML, and how-it-works
+3. Add a `PROMPT.md` with a human-readable copy of the prompt (the workflow YAML is the source of truth at runtime — keep both in sync)
+4. Add any reference config files (e.g., `mcp-config.json`)
+5. Create the reusable workflow in `.github/workflows/<agent-name>.yml` using `workflow_call`
+6. Submit a pull request for review
+
+### Agent Directory Structure
+
+```
+agents/your-agent-name/
+├── README.md           # Required: usage docs, inputs, quick-start
+├── PROMPT.md           # Required: human-readable prompt reference
+└── mcp-config.json     # Optional: reference MCP config
+```
+
+### Guidelines
+
+- The workflow YAML is the runtime source of truth for the prompt
+- PROMPT.md is a reference copy for readability — update it when the workflow prompt changes
+- Use `workflow_call` with typed inputs and required secrets
+- Write the MCP config to `/tmp/` at runtime (callers don't have access to the marketplace filesystem)
+
 ## Code Review
 
 All changes require at least one review from the marketplace maintainers.

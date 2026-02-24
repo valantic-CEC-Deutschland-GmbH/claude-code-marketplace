@@ -101,6 +101,40 @@ LLM-powered pre-tool-use hook that evaluates **every** Claude Code tool call for
 | External API | None | OpenAI API (`OPENAI_API_KEY` required) |
 | Latency | ~instant | ~200-500ms per evaluation |
 
+## Agents
+
+Reusable GitHub Actions workflows powered by Claude Code CLI that run autonomously in CI.
+
+| Agent | Description |
+|-------|-------------|
+| [Updater Agent](agents/updater-agent/) | Autonomous dependency updates for package managers, Docker images, and GitHub Actions |
+
+### Quick Start — Updater Agent
+
+Create `.github/workflows/updater-agent.yml` in your repository:
+
+```yaml
+name: Updater Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      major:
+        description: 'Include major version updates'
+        type: boolean
+        default: false
+
+jobs:
+  update-dependencies:
+    uses: valantic-CEC-Deutschland-GmbH/claude-code-marketplace/.github/workflows/updater-agent.yml@main
+    with:
+      major: ${{ inputs.major }}
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+```
+
+See [agents/updater-agent/README.md](agents/updater-agent/README.md) for full documentation.
+
 ## TweakCC UI Configuration
 
 This repository includes a [`.tweakcc/config.json`](.tweakcc/config.json) that customizes the Claude Code terminal UI. It is managed by [TweakCC](https://github.com/Piebald-AI/tweakcc), a tool for theming and personalizing the Claude Code CLI experience.

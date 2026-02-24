@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 — 2026-02-24
+
+### Added
+- **Updater Agent**: Reusable GitHub Actions workflow for autonomous dependency updates (package managers, Docker images, GitHub Actions). Configurable major/minor control.
+
 ## 1.1.3 — 2026-02-24
 
 ### Improved

@@ -5,7 +5,7 @@
 ### Fixed
 - Updater Agent now installs required language runtimes (PHP, Python, etc.) before checking for outdated packages — fixes false "all up to date" results on projects using non-Node.js stacks
 - Updater Agent now handles missing lock files (e.g., composer.lock) by running a full dependency resolution first
-- Updater Agent can now update GitHub Actions workflow files (added `workflows: write` permission)
+- Updater Agent documents that updating workflow files requires a PAT with `workflow` scope
 - Updater Agent with `major: true` now actually attempts major version bumps instead of preemptively skipping them as "too complex"
 
 ## 1.2.0 — 2026-02-24

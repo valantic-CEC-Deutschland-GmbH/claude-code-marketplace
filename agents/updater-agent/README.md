@@ -63,12 +63,13 @@ permissions:
 
 1. **Branch setup** — Checks for an existing PR on the update branch. Continues from it if found, or creates a fresh branch from main.
 2. **Stack discovery** — Scans the repo for all package managers, Dockerfiles, compose files, and GitHub Actions workflows.
-3. **Outdated detection** — Runs outdated commands for each package manager, checks Docker Hub for newer image tags, checks GitHub for newer action versions.
-4. **Updates** — Applies updates one by one, using Context7 for migration guides on major bumps. Updates all files referencing the same Docker image for consistency.
-5. **Verification** — Discovers project checks from CLAUDE.md, package.json scripts, composer.json scripts, Makefile, and CI configs. Runs them and reverts updates that fail.
-6. **Technical debt** — Records any skipped dependencies so future runs know to skip them.
-7. **Commit & push** — Creates a dated commit and pushes.
-8. **PR** — Creates or updates a PR with structured tables grouping changes by type.
+3. **Tool installation** — Installs required language runtimes and package managers (PHP, Python, Go, etc.) on the bare runner, then runs dependency install commands (composer install/update, npm ci) to populate vendor directories and lock files.
+4. **Outdated detection** — Runs outdated commands for each package manager, checks Docker Hub for newer image tags, checks GitHub for newer action versions.
+5. **Updates** — Applies updates one by one, using Context7 for migration guides on major bumps. Updates all files referencing the same Docker image for consistency.
+6. **Verification** — Discovers project checks from CLAUDE.md, package.json scripts, composer.json scripts, Makefile, and CI configs. Runs them and reverts updates that fail.
+7. **Technical debt** — Records any skipped dependencies so future runs know to skip them.
+8. **Commit & push** — Creates a dated commit and pushes.
+9. **PR** — Creates or updates a PR with structured tables grouping changes by type.
 
 ## Major Version Filtering
 

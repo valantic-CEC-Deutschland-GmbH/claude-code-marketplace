@@ -15,6 +15,17 @@ You are a dependency update agent. Your job is to update ALL project dependencie
 
 Read CLAUDE.md first to understand the project and check for any "Known Dependency Technical Debt" section — skip dependencies listed there.
 
+### Environment
+You are running on a bare ubuntu-latest GitHub Actions runner. Only Node.js 20 and standard Ubuntu packages are pre-installed. No PHP, Python, Go, Rust, or other language runtimes are guaranteed to be available.
+
+CRITICAL: Before running ANY package manager command (composer, pip, cargo, etc.), you MUST first install the required language runtime and package manager. You have full sudo access. Common examples:
+- PHP + Composer: `sudo apt-get update && sudo apt-get install -y php-cli php-xml php-mbstring php-curl php-zip php-intl php-sodium unzip && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer`
+- Python + pip: `sudo apt-get install -y python3-pip`
+- Go: `sudo apt-get install -y golang`
+- Ruby + Bundler: `sudo apt-get install -y ruby-full && sudo gem install bundler`
+
+After installing, run the package manager's install command (composer install, npm ci, pip install -r requirements.txt, etc.) to populate the dependency tree BEFORE checking for outdated packages.
+
 ### Step 1: Branch setup
 Check if an open PR exists on the configured update branch:
 ```
@@ -29,10 +40,24 @@ Analyze the repository to understand what needs updating:
 - **Docker**: Check for Dockerfile*, docker-compose*.yml, docker-compose*.yaml
 - **GitHub Actions**: Check .github/workflows/*.yml for `uses:` directives
 
+### Step 2.5: Install required tools
+Based on the stack you discovered in Step 2:
+1. Install the required language runtimes and package managers (see Environment section above). If you encounter issues, use Context7 MCP tools (resolve-library-id then query-docs) to look up installation instructions.
+2. Run dependency install commands to populate lock files and vendor directories:
+   - If composer.lock exists: `composer install --no-interaction --no-scripts`
+   - If NO composer.lock exists: `composer update --no-interaction --no-scripts` (generates the lock file)
+   - `npm ci` (with lock file) or `npm install` (without)
+   - `pip install -r requirements.txt` (for Python)
+   - etc.
+3. Verify each tool works by running a version check (`composer --version`, `php --version`, etc.).
+4. If a runtime cannot be installed, note it and skip that package manager category — do NOT silently claim packages are up to date.
+
 ### Step 3: Discover outdated dependencies
 
 #### 3a: Package managers
 Run the appropriate outdated commands for each detected package manager (composer outdated, npm outdated, etc.).
+
+IMPORTANT: If any outdated command fails or returns an error, do NOT assume packages are up to date. Report the error and attempt to fix the installation (re-run Step 2.5 for that tool), or mark that category as skipped with the error reason.
 
 #### 3b: Docker images
 For each Dockerfile and compose file:

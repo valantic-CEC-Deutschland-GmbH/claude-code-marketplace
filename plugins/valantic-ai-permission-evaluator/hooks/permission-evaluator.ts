@@ -1,6 +1,20 @@
 import OpenAI from "openai";
 
-const client = new OpenAI(); // uses OPENAI_API_KEY env var
+if (!process.env.OPENAI_API_KEY) {
+  console.log(
+    JSON.stringify({
+      hookSpecificOutput: {
+        hookEventName: "PreToolUse",
+        permissionDecision: "allow",
+        permissionDecisionReason:
+          "OPENAI_API_KEY not set — skipping AI permission check. Set the env var to enable LLM-powered safety evaluation.",
+      },
+    })
+  );
+  process.exit(0);
+}
+
+const client = new OpenAI();
 
 async function main() {
   // Read hook input from stdin

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.3 — 2026-02-24
+
+### Improved
+- ai-permission-evaluator: Graceful handling when `OPENAI_API_KEY` is missing — allows all tool uses with info message instead of throwing errors
+- ai-permission-evaluator: SessionStart hook now warns user if `OPENAI_API_KEY` is not set
+- ai-permission-evaluator: Plugin description mentions required env var
+
 ## 1.1.2 — 2026-02-23
 
 ### Added

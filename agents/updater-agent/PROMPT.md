@@ -78,7 +78,7 @@ If major updates are disabled: skip updates where the major version changes. For
 ### Step 4: Update dependencies
 
 #### 4a: Package manager updates
-Update each dependency, use Context7 MCP for migration guides on major bumps, apply code changes as needed.
+Update each dependency, use Context7 MCP for migration guides on major bumps, apply code changes as needed. Only skip an update if it genuinely fails verification (Step 5) after your best effort. When major updates are enabled, you MUST attempt every major version bump — do NOT skip simply because a migration looks complex.
 
 #### 4b: Docker image updates
 Update tags in all files referencing the same image. Check downstream effects (e.g., PHP constraint in composer.json after base image bump). Check COPY --from= references.

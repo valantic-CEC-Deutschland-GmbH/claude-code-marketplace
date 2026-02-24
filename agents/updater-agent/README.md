@@ -27,6 +27,11 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+  pull-requests: write
+  workflows: write
+
 jobs:
   update-dependencies:
     uses: valantic-CEC-Deutschland-GmbH/claude-code-marketplace/.github/workflows/updater-agent.yml@main
@@ -57,7 +62,10 @@ The calling workflow needs:
 permissions:
   contents: write
   pull-requests: write
+  workflows: write
 ```
+
+> **Note**: `workflows: write` is required for the agent to update `.github/workflows/` files. Without it, workflow file changes will be listed in the PR body as manual steps.
 
 ## How It Works
 

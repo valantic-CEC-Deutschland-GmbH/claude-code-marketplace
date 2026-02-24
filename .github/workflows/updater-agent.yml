@@ -18,6 +18,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  workflows: write
 
 jobs:
   dependency-update:
@@ -151,7 +152,7 @@ jobs:
           2. For major version bumps, use Context7 MCP tools (resolve-library-id then query-docs) to look up migration guides and breaking changes.
           3. Apply any necessary code changes — update imports, fix deprecated API calls, adjust config files. You have full permission to edit source code.
           4. Run the package manager's install/update to ensure everything resolves.
-          5. If an update is too complex, skip it and note it for the technical debt section.
+          5. Only skip an update if it genuinely fails verification (Step 5) after your best effort. When major updates are enabled, you MUST attempt every major version bump — look up migration guides via Context7, apply code changes, and only skip if verification fails after your fixes. Do NOT skip simply because a migration looks complex.
 
           ### 4b: Docker image updates
           For each outdated Docker image:

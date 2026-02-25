@@ -101,39 +101,11 @@ LLM-powered pre-tool-use hook that evaluates **every** Claude Code tool call for
 | External API | None | OpenAI API (`OPENAI_API_KEY` required) |
 | Latency | ~instant | ~200-500ms per evaluation |
 
-## Agents
+## GitHub Agents
 
-Reusable GitHub Actions workflows powered by Claude Code CLI that run autonomously in CI.
+Reusable GitHub Actions workflows powered by Claude Code CLI that run autonomously in CI. This collection is centralized here so every consuming repository only needs a thin caller workflow.
 
-| Agent | Description |
-|-------|-------------|
-| [Updater Agent](agents/updater-agent/) | Autonomous dependency updates for package managers, Docker images, and GitHub Actions |
-
-### Quick Start — Updater Agent
-
-Create `.github/workflows/updater-agent.yml` in your repository:
-
-```yaml
-name: Updater Agent
-
-on:
-  workflow_dispatch:
-    inputs:
-      major:
-        description: 'Include major version updates'
-        type: boolean
-        default: false
-
-jobs:
-  update-dependencies:
-    uses: valantic-CEC-Deutschland-GmbH/claude-code-marketplace/.github/workflows/updater-agent.yml@main
-    with:
-      major: ${{ inputs.major }}
-    secrets:
-      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-```
-
-See [agents/updater-agent/README.md](agents/updater-agent/README.md) for full documentation.
+See **[github-agents.md](github-agents.md)** for the full catalog, setup instructions, and design rationale.
 
 ## TweakCC UI Configuration
 

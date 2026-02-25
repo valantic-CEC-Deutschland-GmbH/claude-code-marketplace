@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.2 — 2026-02-25
+
+### Changed
+- Extracted GitHub Agents documentation into dedicated `github-agents.md` with centralization rationale and links to additional autonomous agent resources
+
 ## 1.2.1 — 2026-02-24
 
 ### Fixed

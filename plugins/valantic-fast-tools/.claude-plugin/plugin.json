@@ -1,0 +1,8 @@
+{
+  "name": "valantic-fast-tools",
+  "description": "Enforces fast CLI tools (rg, fd, bat) for all Claude Code agents via a PreToolUse hook and ships CLAUDE.md-aware exploration agents. Optional manual settings unlock full effect - see plugin README.",
+  "author": {
+    "name": "Valantic",
+    "email": "claude-marketplace@valantic.com"
+  }
+}

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0 - 2026-06-10
+
+### Added
+- **valantic-fast-tools**: New plugin that forces all agents (including built-in Explore/Plan) to use fast CLI tools. PreToolUse Bash hook blocks `grep`/`find`/bare `cat`/`ls -R` with a corrective message when `rg`/`fd`/`bat`/`tree` are installed (binary-aware, escape hatch via `# allow-slow-tools`). Ships three CLAUDE.md-aware exploration agents (`code-explorer`, `code-architect`, `code-reviewer`) as replacements for the built-in agents, which skip CLAUDE.md by design. Requires system packages ripgrep, fd, bat, tree, jq - see plugin README for per-OS install commands and the two optional settings (`USE_BUILTIN_RIPGREP=0`, deny `Agent(Explore)`/`Agent(Plan)`).
+
 ## 1.2.2 — 2026-02-25
 
 ### Changed

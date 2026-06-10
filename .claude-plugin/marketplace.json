@@ -48,6 +48,13 @@
       "version": "1.0.0",
       "source": "./plugins/valantic-ai-permission-evaluator",
       "category": "security"
+    },
+    {
+      "name": "valantic-fast-tools",
+      "description": "Force all agents to use fast CLI tools (rg, fd, bat) via Bash hook + CLAUDE.md-aware exploration agents",
+      "version": "1.0.0",
+      "source": "./plugins/valantic-fast-tools",
+      "category": "development"
     }
   ]
 }

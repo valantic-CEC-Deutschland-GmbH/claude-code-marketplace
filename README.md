@@ -18,6 +18,7 @@ Company-internal Claude Code marketplace providing branded tools, workflows, and
 /plugin install valantic-coding-standards@valantic-claude-code-marketplace
 /plugin install valantic-project-setup@valantic-claude-code-marketplace
 /plugin install valantic-ai-permission-evaluator@valantic-claude-code-marketplace
+/plugin install valantic-fast-tools@valantic-claude-code-marketplace
 ```
 
 ## Available Plugins
@@ -30,6 +31,7 @@ Company-internal Claude Code marketplace providing branded tools, workflows, and
 | `valantic-coding-standards` | Skill + Hooks | Enforce company coding conventions automatically |
 | `valantic-project-setup` | Skill + Commands | Bootstrap new projects with Valantic templates (PHP, React, Spring) |
 | `valantic-ai-permission-evaluator` | Hooks | LLM-powered tool safety evaluation using GPT-4.1-nano |
+| `valantic-fast-tools` | Hooks + Agents | Force all agents to use fast CLI tools (rg, fd, bat) for faster context building |
 
 ## Plugin Details
 
@@ -100,6 +102,23 @@ LLM-powered pre-tool-use hook that evaluates **every** Claude Code tool call for
 | Dependencies | Python stdlib only | Node.js + `openai` npm package |
 | External API | None | OpenAI API (`OPENAI_API_KEY` required) |
 | Latency | ~instant | ~200-500ms per evaluation |
+
+### valantic-fast-tools
+
+Forces every Claude Code agent (including the built-in exploration agents) to use modern, fast CLI tools instead of `grep`/`find`/`cat` - searches that build agent context run 5-50x faster with ripgrep alone. A `PreToolUse` hook blocks slow commands with a corrective message so the agent retries with the fast tool, and three CLAUDE.md-aware exploration agents (`code-explorer`, `code-architect`, `code-reviewer`) are registered automatically.
+
+**System dependencies (install these or the hook stays passive):**
+
+```bash
+# Arch
+sudo pacman -S ripgrep fd bat tree jq
+# Debian / Ubuntu (symlink fdfind to fd)
+sudo apt install ripgrep fd-find bat tree jq
+# macOS
+brew install ripgrep fd bat tree jq
+```
+
+The hook is binary-aware: each rule only activates when the fast alternative is actually installed, and `jq` is required for the hook itself. Two optional one-line settings (`USE_BUILTIN_RIPGREP=0`, deny built-in `Explore`/`Plan` agents) unlock the full effect - see the [plugin README](plugins/valantic-fast-tools/README.md) for what is automated vs. manual.
 
 ## GitHub Agents
 
